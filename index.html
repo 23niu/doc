@@ -26,7 +26,6 @@
       </span>
     </a>
     <div class="tocify-wrapper">
-      <img src="images/logo.png" />
         <div class="lang-selector">
               <a href="#" data-language-name="http">http</a>
               <a href="#" data-language-name="shell">shell</a>
@@ -59,11 +58,7 @@
 
 <p>Authorization Code 方式是最通用的授权方式，该方式尤其适用于网站使用。</p>
 
-<ol>
-<li>将用户重定向至授权页面</li>
-</ol>
-
-<p><code class="prettyprint">GET https://api.shimo.im/oauth/authorization</code></p>
+<p>首先第三方应用将用户重定向至授权页面 <code class="prettyprint">https://api.shimo.im/oauth/authorization</code>.</p>
 
 <h3 id="请求-query">请求 Query</h3>
 
@@ -94,29 +89,21 @@
 <td>scope</td>
 <td>否</td>
 <td>无</td>
+<td>string</td>
 <td>需要的权限列表，以空格分隔</td>
-<td></td>
 </tr>
 <tr>
 <td>state</td>
 <td>否</td>
 <td>无</td>
+<td>string</td>
 <td>推荐传入一个无法猜测的随机字符串，用来防范 CSRF 攻击</td>
-<td></td>
 </tr>
 </tbody></table>
 
-<ol>
-<li>石墨跳转回第三方应用</li>
-</ol>
+<p>在该页面中用户可以选择是否向第三方应用授权，而后石墨会跳转回第三方应用。如果用户同意授权，则石墨会传回一个临时口令（<code class="prettyprint">code</code> 字段）以及在上一步传来的 <code class="prettyprint">state</code> 参数值（如果提供）。</p>
 
-<p>如果用户同意授权，则石墨会通过 <code class="prettyprint">code</code> 字段传回一个临时口令以及在上一步传来的 <code class="prettyprint">state</code> 参数值（如果提供）。</p>
-
-<ol>
-<li>通过 <code class="prettyprint">code</code> 请求 Token</li>
-</ol>
-
-<p><code class="prettyprint">POST https://api.shimo.im/oauth/token</code></p>
+<p>最后第三方应用在后台通过 <code class="prettyprint">code</code> 的值向石墨 API 请求 Token，API endpoint 为 <code class="prettyprint">POST https://api.shimo.im/oauth/token</code>。</p>
 
 <h3 id="请求-body">请求 Body</h3>
 
