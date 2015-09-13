@@ -26,7 +26,7 @@
       </span>
     </a>
     <div class="tocify-wrapper">
-      <!--<img src="images/logo.png" />-->
+      <img src="images/logo.png" />
         <div class="lang-selector">
               <a href="#" data-language-name="http">http</a>
               <a href="#" data-language-name="shell">shell</a>
@@ -51,7 +51,100 @@
 
           <h1 id="鉴权">鉴权</h1>
 
-<p>石墨鉴权接口遵循 OAuth 2.0 协议。</p>
+<p>石墨鉴权接口遵循 OAuth 2.0 协议。OAuth 是一个能使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
+
+<p>石墨支持如下几种 OAuth 授权方式：</p>
+
+<h2 id="authorization-code-方式">Authorization Code 方式</h2>
+
+<p>Authorization Code 方式是最通用的授权方式，该方式尤其适用于网站使用。</p>
+
+<h3 id="将用户重定向至授权页面">将用户重定向至授权页面</h3>
+
+<p><code class="prettyprint">GET https://api.shimo.im/oauth/authorization</code></p>
+
+<h3 id="请求-query">请求 Query</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>client_id</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>应用的 ID</td>
+</tr>
+<tr>
+<td>redirect_uri</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>验证结果的回调网址</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>否</td>
+<td>无</td>
+<td>需要的权限列表，以空格分隔</td>
+<td></td>
+</tr>
+<tr>
+<td>state</td>
+<td>否</td>
+<td>无</td>
+<td>推荐传入一个无法猜测的随机字符串，用来防范 CSRF 攻击</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h3 id="石墨跳转回第三方应用">石墨跳转回第三方应用</h3>
+
+<p>如果用户同意授权，则石墨会通过 <code class="prettyprint">code</code> 字段传回一个临时口令以及在上一步传来的 <code class="prettyprint">state</code> 参数值（如果提供）。</p>
+
+<h3 id="通过-code-请求-token">通过 <code class="prettyprint">code</code> 请求 Token</h3>
+
+<p><code class="prettyprint">POST https://api.shimo.im/oauth/token</code></p>
+
+<h3 id="请求-body">请求 Body</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>grant_type</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>指定为 <code class="prettyprint">&quot;authorization_code&quot;</code></td>
+</tr>
+<tr>
+<td>code</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>上一步传回来的 <code class="prettyprint">code</code> 参数</td>
+</tr>
+<tr>
+<td>redirect_uri</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>和第一步传的 <code class="prettyprint">redirect_uri</code> 参数一致</td>
+</tr>
+</tbody></table>
 
 <h2 id="provider-exchange-方式">Provider Exchange 方式</h2>
 <pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/access_token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
