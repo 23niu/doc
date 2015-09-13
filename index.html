@@ -53,13 +53,15 @@
 
 <p>石墨鉴权接口遵循 OAuth 2.0 协议。OAuth 是一个能使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
 
-<p>石墨支持如下几种 OAuth 授权方式：</p>
+<p>石墨支持 Authorization Code, Password 和 Provider Exchange 三种 OAuth 授权方式。</p>
 
 <h2 id="authorization-code-方式">Authorization Code 方式</h2>
 
 <p>Authorization Code 方式是最通用的授权方式，该方式尤其适用于网站使用。</p>
 
-<h3 id="将用户重定向至授权页面">将用户重定向至授权页面</h3>
+<ol>
+<li>将用户重定向至授权页面</li>
+</ol>
 
 <p><code class="prettyprint">GET https://api.shimo.im/oauth/authorization</code></p>
 
@@ -104,11 +106,15 @@
 </tr>
 </tbody></table>
 
-<h3 id="石墨跳转回第三方应用">石墨跳转回第三方应用</h3>
+<ol>
+<li>石墨跳转回第三方应用</li>
+</ol>
 
 <p>如果用户同意授权，则石墨会通过 <code class="prettyprint">code</code> 字段传回一个临时口令以及在上一步传来的 <code class="prettyprint">state</code> 参数值（如果提供）。</p>
 
-<h3 id="通过-code-请求-token">通过 <code class="prettyprint">code</code> 请求 Token</h3>
+<ol>
+<li>通过 <code class="prettyprint">code</code> 请求 Token</li>
+</ol>
 
 <p><code class="prettyprint">POST https://api.shimo.im/oauth/token</code></p>
 
