@@ -221,6 +221,84 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 
 <p><code class="prettyprint">GET https://api.shimo.im/users/me</code></p>
 
+          <h1 id="登录合作方">登录合作方</h1>
+
+<p>石墨为有限的登录合作方提供专用 API 以实现文件夹权限同步绑定等功能。</p>
+
+<h2 id="创建文档">创建文档</h2>
+
+<p>根据合作方提供的实体 ID 来建立文档，并跳转到文档编写页面。</p>
+
+<h3 id="http-请求">HTTP 请求</h3>
+
+<p><code class="prettyprint">POST https://api.shimo.im/provider/:provider/files</code></p>
+
+<h3 id="请求-param">请求 Param</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>provider</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>合作方名称</td>
+</tr>
+</tbody></table>
+
+<h3 id="请求-body">请求 Body</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>providerEntity</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>要创建的文档所属实体 ID</td>
+</tr>
+</tbody></table>
+
+<h2 id="请求用户绑定合作方账号">请求用户绑定合作方账号</h2>
+
+<h3 id="http-请求">HTTP 请求</h3>
+
+<p><code class="prettyprint">POST https://shimo.im/sso/login/:provider</code></p>
+
+<h3 id="请求-body">请求 Body</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>callback</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>登录成功后的回调地址</td>
+</tr>
+</tbody></table>
+
           <h1 id="文档">文档</h1>
 
 <h2 id="获取文档列表">获取文档列表</h2>
