@@ -253,7 +253,35 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 </tr>
 </tbody></table>
 
-<h3 id="请求-body">请求 Body</h3>
+<h2 id="获取文档列表">获取文档列表</h2>
+
+<p>返回合作方提供的实体 ID 对应的文件列表</p>
+
+<h3 id="http-请求">HTTP 请求</h3>
+
+<p><code class="prettyprint">GET https://api.shimo.im/provider/:provider/files</code></p>
+
+<h3 id="请求-param">请求 Param</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>provider</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>合作方名称</td>
+</tr>
+</tbody></table>
+
+<h3 id="请求-query">请求 Query</h3>
 
 <table><thead>
 <tr>
@@ -269,7 +297,62 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 <td>是</td>
 <td>无</td>
 <td>string</td>
-<td>要创建的文档所属实体 ID</td>
+<td>要获取的所属实体 ID</td>
+</tr>
+</tbody></table>
+
+<h2 id="获取文档内容">获取文档内容</h2>
+
+<p>返回合作方提供的实体 ID 对应的文件列表</p>
+
+<h3 id="http-请求">HTTP 请求</h3>
+
+<p><code class="prettyprint">GET https://api.shimo.im/provider/:provider/files/:guid</code></p>
+
+<h3 id="请求-param">请求 Param</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>provider</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>合作方名称</td>
+</tr>
+<tr>
+<td>guil</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>文件的 GUID</td>
+</tr>
+</tbody></table>
+
+<h3 id="请求-query">请求 Query</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>providerEntity</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>要获取的所属实体 ID</td>
 </tr>
 </tbody></table>
 
