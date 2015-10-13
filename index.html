@@ -430,7 +430,7 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 </tr>
 </thead><tbody>
 <tr>
-<td>folderId</td>
+<td>folder</td>
 <td>否</td>
 <td>无</td>
 <td>string</td>
@@ -439,14 +439,14 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 </tbody></table>
 
 <h2 id="创建文档">创建文档</h2>
-<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/files?parentId=32</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/files?folder=32</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 <span class="na">Content-Length</span><span class="p">:</span> <span class="s">15</span>
 
 <span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"file"</span><span class="p">}</span><span class="w">
 </span></code></pre>
-<pre class="highlight shell"><code>curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/files?parentId=32"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/files?folder=32"</span> <span class="se">\</span>
     -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
     -d <span class="s2">"{</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">file</span><span class="se">\"</span><span class="s2">}"</span>
 </code></pre>
@@ -455,15 +455,15 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 <p>请求成功后返回样例：</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"68"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"guid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"68"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"无标题"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"新建文档"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;div&gt;&lt;/div&gt;"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://shimo.im/docs/2da92f"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>创建一篇文档，如果成功则返回文档的 URL。</p>
+<p>创建一篇文档，并返回文件的信息。</p>
 
 <h3 id="http-请求">HTTP 请求</h3>
 
@@ -481,7 +481,7 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 </tr>
 </thead><tbody>
 <tr>
-<td>parentId</td>
+<td>folder</td>
 <td>否</td>
 <td>无</td>
 <td>string</td>
@@ -501,17 +501,20 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 </tr>
 </thead><tbody>
 <tr>
-<td>type</td>
+<td>isFolder</td>
 <td>否</td>
-<td><code class="prettyprint">file</code></td>
+<td><code class="prettyprint">false</code></td>
+<td>boolean</td>
+<td>创建文件还是文件夹</td>
+</tr>
+<tr>
+<td>name</td>
+<td>否</td>
+<td>新建文档</td>
 <td>string</td>
-<td>要创建的实体类型，<code class="prettyprint">file</code> 或 <code class="prettyprint">&#39;folder&#39;</code></td>
+<td>文件（夹）标题</td>
 </tr>
 </tbody></table>
-
-<aside class="notice">
-成功后文档在石墨的 URL 可以从返回对象的 `url` 属性中获取，之后可以跳转到该 URL 以使用户继续编辑。
-</aside>
 
 <h2 id="获取文档内容">获取文档内容</h2>
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files/17</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
