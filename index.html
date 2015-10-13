@@ -394,10 +394,10 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
           <h1 id="文档">文档</h1>
 
 <h2 id="获取文档列表">获取文档列表</h2>
-<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files?folderId=jUiAcImUVWuhIbcW&amp;subFolders%20=true</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files?folder=jUiAcImUVWuhIbcW&amp;subFolders%20=true</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X <span class="s2">"GET"</span> <span class="s2">"https://api.shimo.im/files?folderId=jUiAcImUVWuhIbcW
+<pre class="highlight shell"><code>curl -X <span class="s2">"GET"</span> <span class="s2">"https://api.shimo.im/files?folder=jUiAcImUVWuhIbcW
 </span></code></pre>
 
 <blockquote>
@@ -444,11 +444,11 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 <span class="na">Content-Length</span><span class="p">:</span> <span class="s">15</span>
 
-<span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"file"</span><span class="p">}</span><span class="w">
+<span class="p">{</span><span class="nt">"folder"</span><span class="p">:</span><span class="kc">false</span><span class="p">}</span><span class="w">
 </span></code></pre>
 <pre class="highlight shell"><code>curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/files?folder=32"</span> <span class="se">\</span>
     -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-    -d <span class="s2">"{</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">file</span><span class="se">\"</span><span class="s2">}"</span>
+    -d <span class="s2">"{</span><span class="se">\"</span><span class="s2">folder</span><span class="se">\"</span><span class="s2">:false}"</span>
 </code></pre>
 
 <blockquote>
