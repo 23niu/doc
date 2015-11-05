@@ -52,7 +52,7 @@
 
 <p>石墨鉴权接口遵循 OAuth 2.0 协议。OAuth 是一个能使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
 
-<p>石墨支持 Authorization Code, Password 和 Provider Exchange 三种 OAuth 授权方式。</p>
+<p>石墨支持 Authorization Code, Password, Provider Exchange 和 Refresh Token 四种 OAuth 授权方式。</p>
 
 <h2 id="authorization-code-方式">Authorization Code 方式</h2>
 
@@ -71,6 +71,13 @@
 <th>描述</th>
 </tr>
 </thead><tbody>
+<tr>
+<td>scope</td>
+<td>否</td>
+<td>无</td>
+<td>string</td>
+<td>需要的权限列表，以空格分隔</td>
+</tr>
 <tr>
 <td>client_id</td>
 <td>是</td>
@@ -91,13 +98,6 @@
 <td>无</td>
 <td>string</td>
 <td>必须为 <code class="prettyprint">&quot;code&quot;</code></td>
-</tr>
-<tr>
-<td>scope</td>
-<td>否</td>
-<td>无</td>
-<td>string</td>
-<td>需要的权限列表，以空格分隔</td>
 </tr>
 <tr>
 <td>state</td>
@@ -146,7 +146,11 @@
 </tr>
 </tbody></table>
 
-<p>该 API 会返回 Access Token 和 Refresh Token：</p>
+<p>该 API 会返回 Access Token 和 Refresh Token。</p>
+
+<aside class="notice">
+scope 的有效值分别为 `public`, `read` 和 `write`，分别对应“获取用户公开资料”、“读取用户的私有文档”和“读写用户的私有文档”。
+</aside>
 
 <h2 id="provider-exchange-方式">Provider Exchange 方式</h2>
 <pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -190,11 +194,138 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 <td>指定为 <code class="prettyprint">provider_exchange</code></td>
 </tr>
 <tr>
+<td>scope</td>
+<td>否</td>
+<td>无</td>
+<td>string</td>
+<td>需要的权限列表，以空格分隔</td>
+</tr>
+<tr>
 <td>provider_user</td>
 <td>是</td>
 <td>无</td>
 <td>string</td>
 <td>目标用户在 provider 的用户 ID</td>
+</tr>
+</tbody></table>
+
+<h2 id="password-方式">Password 方式</h2>
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">64</span>
+
+grant_type=password&amp;username=user@shimo.im@password=strongtoken
+</code></pre>
+<pre class="highlight shell"><code><span class="c"># Authorization 的值遵循 HTTP Basic Auth，由 client_id:client_secret 构成</span>
+curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oauth/token"</span> <span class="se">\</span>
+    -H <span class="s2">"Authorization: Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="</span> <span class="se">\</span>
+    --data-urlencode <span class="s2">"grant_type=password"</span> <span class="se">\</span>
+    --data-urlencode <span class="s2">"username=user@shimo.im"</span> <span class="se">\</span>
+    --data-urlencode <span class="s2">"password=strongtoken"</span>
+</code></pre>
+
+<p>Password 方式允许第三方应用通过用户的邮箱和密码获取 Access Token。目前此方式只开放给指定的第三方应用。</p>
+
+<h3 id="http-请求">HTTP 请求</h3>
+
+<p><code class="prettyprint">POST https://api.shimo.im/oauth/token</code></p>
+
+<h3 id="请求-body">请求 Body</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>grant_type</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>指定为 <code class="prettyprint">password</code></td>
+</tr>
+<tr>
+<td>scope</td>
+<td>否</td>
+<td>无</td>
+<td>string</td>
+<td>需要的权限列表，以空格分隔</td>
+</tr>
+<tr>
+<td>username</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>用户的邮箱</td>
+</tr>
+<tr>
+<td>password</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>用户的密码</td>
+</tr>
+</tbody></table>
+
+<h2 id="refresh-token-方式">Refresh Token 方式</h2>
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">64</span>
+
+grant_type=refresh_token&amp;refresh_token=tokenhere
+</code></pre>
+<pre class="highlight shell"><code><span class="c"># Authorization 的值遵循 HTTP Basic Auth，由 client_id:client_secret 构成</span>
+curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oauth/token"</span> <span class="se">\</span>
+    -H <span class="s2">"Authorization: Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="</span> <span class="se">\</span>
+    --data-urlencode <span class="s2">"grant_type=refresh_token"</span> <span class="se">\</span>
+    --data-urlencode <span class="s2">"refresh_token=tokenhere"</span>
+</code></pre>
+
+<p>Access Token 的有效期为一个小时，过期后需要使用 Refresh Token 刷新。Refresh Token 除非用户主动撤销，否则永久有效。</p>
+
+<h3 id="http-请求">HTTP 请求</h3>
+
+<p><code class="prettyprint">POST https://api.shimo.im/oauth/token</code></p>
+
+<h3 id="请求-body">请求 Body</h3>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>grant_type</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>指定为 <code class="prettyprint">refresh_token</code></td>
+</tr>
+<tr>
+<td>scope</td>
+<td>否</td>
+<td>无</td>
+<td>string</td>
+<td>需要的权限列表，以空格分隔</td>
+</tr>
+<tr>
+<td>refresh_token</td>
+<td>是</td>
+<td>无</td>
+<td>string</td>
+<td>Refresh Token</td>
 </tr>
 </tbody></table>
 
@@ -229,174 +360,6 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 <h3 id="http-请求">HTTP 请求</h3>
 
 <p><code class="prettyprint">GET https://api.shimo.im/users/me</code></p>
-
-          <h1 id="登录合作方">登录合作方</h1>
-
-<p>石墨为有限的登录合作方提供专用 API 以实现文件夹权限同步绑定等功能。</p>
-
-<h2 id="创建文档">创建文档</h2>
-
-<p>根据合作方提供的实体 ID 来建立文档，并跳转到文档编写页面。</p>
-
-<h3 id="http-请求">HTTP 请求</h3>
-
-<p><code class="prettyprint">POST https://api.shimo.im/provider/:provider/files</code></p>
-
-<h3 id="请求-param">请求 Param</h3>
-
-<table><thead>
-<tr>
-<th>参数</th>
-<th>必选</th>
-<th>默认值</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>provider</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>合作方名称</td>
-</tr>
-</tbody></table>
-
-<h2 id="获取文档列表">获取文档列表</h2>
-
-<p>返回合作方提供的实体 ID 对应的文件列表</p>
-
-<h3 id="http-请求">HTTP 请求</h3>
-
-<p><code class="prettyprint">GET https://api.shimo.im/provider/:provider/files</code></p>
-
-<h3 id="请求-param">请求 Param</h3>
-
-<table><thead>
-<tr>
-<th>参数</th>
-<th>必选</th>
-<th>默认值</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>provider</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>合作方名称</td>
-</tr>
-</tbody></table>
-
-<h3 id="请求-query">请求 Query</h3>
-
-<table><thead>
-<tr>
-<th>参数</th>
-<th>必选</th>
-<th>默认值</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>providerEntity</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>要获取的所属实体 ID</td>
-</tr>
-</tbody></table>
-
-<h2 id="获取文档内容">获取文档内容</h2>
-
-<p>返回合作方提供的实体 ID 对应的文件列表</p>
-
-<h3 id="http-请求">HTTP 请求</h3>
-
-<p><code class="prettyprint">GET https://api.shimo.im/provider/:provider/files/:guid</code></p>
-
-<h3 id="请求-param">请求 Param</h3>
-
-<table><thead>
-<tr>
-<th>参数</th>
-<th>必选</th>
-<th>默认值</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>provider</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>合作方名称</td>
-</tr>
-<tr>
-<td>guil</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>文件的 GUID</td>
-</tr>
-</tbody></table>
-
-<h3 id="请求-query">请求 Query</h3>
-
-<table><thead>
-<tr>
-<th>参数</th>
-<th>必选</th>
-<th>默认值</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>providerEntity</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>要获取的所属实体 ID</td>
-</tr>
-</tbody></table>
-
-<h2 id="请求用户绑定合作方账号">请求用户绑定合作方账号</h2>
-
-<h3 id="http-请求">HTTP 请求</h3>
-
-<p><code class="prettyprint">GET https://shimo.im/sso/login/:provider</code></p>
-
-<h3 id="请求-query">请求 Query</h3>
-
-<table><thead>
-<tr>
-<th>参数</th>
-<th>必选</th>
-<th>默认值</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>callback</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>登录成功后的回调地址</td>
-</tr>
-<tr>
-<td>providerUser</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>需要用户登录的第三方账号 id</td>
-</tr>
-</tbody></table>
 
           <h1 id="文档">文档</h1>
 
