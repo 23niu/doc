@@ -47,9 +47,9 @@
         
           <h1 id="oauth-授权">OAuth 授权</h1>
 
-<p>石墨鉴权接口遵循 <a href="https://tools.ietf.org/html/rfc6749">OAuth 2.0 协议</a>。OAuth 是一个能使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的标准协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
+<p>石墨鉴权接口遵循 <a href="https://tools.ietf.org/html/rfc6749">OAuth 2.0 协议</a>。OAuth 是一个使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的标准协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
 
-<p>石墨支持 Authorization Code, Password 和 Refresh Token 三种 OAuth 授权方式，其中每种授权方式都是通过调用 <code class="prettyprint">/oauth/token</code> 接口来最终获取 Access Token，该接口需要传送 <code class="prettyprint">&quot;Authorization&quot;</code> header，内容遵循 HTTP Basic 标准，格式为 <code class="prettyprint">&quot;client_id:client_secret&quot;</code>。另外为了严格遵照 OAuth 2.0 规范，OAuth 相关的 API 均支持使用 <code class="prettyprint">application/x-www-form-urlencoded</code> 格式传送数据。</p>
+<p>石墨支持 Authorization Code, Password 和 Refresh Token 三种 OAuth 授权方式，其中每种授权方式都是通过调用 <code class="prettyprint">/oauth/token</code> 接口来最终获取 Access Token，该接口需要传送 &ldquo;Authorization&rdquo; 请求头，内容遵循 HTTP Basic 标准，格式为 <code class="prettyprint">client_id:client_secret</code>。另外为了严格遵照 OAuth 2.0 规范，OAuth 相关的 API 均支持使用 &ldquo;application/x-www-form-urlencoded&rdquo; 格式传送数据。</p>
 
 <h2 id="authorization-code-方式">Authorization Code 方式</h2>
 <pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -60,12 +60,12 @@
 
 grant_type=authorization&amp;code=yourcode
 </code></pre>
-<pre class="highlight javascript"><code><span class="c1">// First, redirect users to the authorization page:</span>
+<pre class="highlight javascript"><code><span class="c1">// 首先将用户重定向到授权页面：</span>
 <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="nx">shimo</span><span class="p">.</span><span class="nx">oauth</span><span class="p">.</span><span class="nx">authorization</span><span class="p">({</span>
   <span class="na">redirect_uri</span><span class="p">:</span> <span class="s1">'https://yourapp.tld/oauth/callback'</span>
 <span class="p">}));</span>
 
-<span class="c1">// Second, exchange token with the returned code in the callback page:</span>
+<span class="c1">// 然后在回调页面用返回的 code 请求 token：</span>
 <span class="nx">shimo</span><span class="p">.</span><span class="nx">oauth</span><span class="p">.</span><span class="nx">token</span><span class="p">(</span><span class="s1">'authorization'</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">code</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">code</span>
 <span class="p">});</span>
@@ -73,7 +73,7 @@ grant_type=authorization&amp;code=yourcode
 
 <p>Authorization Code 方式是最通用的授权方式，该方式尤其适用于网站使用。</p>
 
-<p>首先第三方应用将用户重定向至授权页面 <code class="prettyprint">https://api.shimo.im/oauth/authorization</code>。</p>
+<p>首先第三方应用将用户重定向至授权页面 <code class="prettyprint">https://api.shimo.im/oauth/authorization</code>，需要提供的参数如下：</p>
 
 <h3 id="请求-query">请求 Query</h3>
 
