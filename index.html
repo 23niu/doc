@@ -315,7 +315,7 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
           <h1 id="文档">文档</h1>
 
 <h2 id="获取文档列表">获取文档列表</h2>
-<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files?folder=jUiAcImUVWuhIbcW&amp;subFolders%20=true</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files?folder=jUiAcImUVWuhIbcW</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
 <pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'files'</span><span class="p">,</span> <span class="p">{</span> <span class="na">qs</span><span class="p">:</span> <span class="p">{</span> <span class="na">folder</span><span class="p">:</span> <span class="s1">'jUiAcImUVWuhIbcW'</span> <span class="p">}</span> <span class="p">});</span>
