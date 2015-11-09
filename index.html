@@ -71,9 +71,7 @@ grant_type=authorization&amp;code=yourcode
 <span class="p">});</span>
 </code></pre>
 
-<p>Authorization Code 方式是最通用的授权方式，该方式尤其适用于网站使用。</p>
-
-<p>首先第三方应用将用户重定向至授权页面 <code class="prettyprint">https://api.shimo.im/oauth/authorization</code>，需要提供的参数如下：</p>
+<p>Authorization Code 方式是最通用的授权方式，该方式尤其适用于网站使用。使用 Authorization Code 方式获得 Access Token 需要两步，首先要将用户重定向至授权页面 <code class="prettyprint">https://api.shimo.im/oauth/authorization</code>，需要提供的参数如下：</p>
 
 <h3 id="请求-query">请求 Query</h3>
 
@@ -123,9 +121,9 @@ grant_type=authorization&amp;code=yourcode
 </tr>
 </tbody></table>
 
-<p>在该页面中用户可以选择是否向第三方应用授权，而后石墨会跳转回第三方应用。如果用户同意授权，则石墨会传回一个临时口令（<code class="prettyprint">code</code> 字段）以及在上一步传来的 <code class="prettyprint">state</code> 参数值（如果提供）。</p>
+<p>在该页面中用户可以选择是否向第三方应用授权，而后石墨会跳转回第三方应用。如果用户同意授权，则石墨会传回一个临时口令（<code class="prettyprint">code</code> 字段）以及在上一步传来的 <code class="prettyprint">state</code> 参数值（如果提供），否则会传回 <code class="prettyprint">error</code> 和 <code class="prettyprint">state</code>，其中 <code class="prettyprint">error</code> 包含具体的错误信息。</p>
 
-<p>最后第三方应用在后台通过 <code class="prettyprint">code</code> 的值向石墨 API 请求 Token，API endpoint 为 <code class="prettyprint">POST https://api.shimo.im/oauth/token</code>。</p>
+<p>最后第三方应用通过 <code class="prettyprint">code</code> 的值向石墨 API 请求 Access Token，API 为 <code class="prettyprint">POST https://api.shimo.im/oauth/token</code>，参数如下：</p>
 
 <h3 id="请求-body">请求 Body</h3>
 
@@ -161,10 +159,8 @@ grant_type=authorization&amp;code=yourcode
 </tr>
 </tbody></table>
 
-<p>该 API 会返回 Access Token 和 Refresh Token。</p>
-
 <aside class="notice">
-scope 的有效值分别为 `public`, `read` 和 `write`，分别对应“获取用户公开资料”、“读取用户的私有文档”和“读写用户的私有文档”。
+scope 的有效值分别为 &ldquo;public&rdquo;, &ldquo;read&rdquo; 和 &ldquo;write&quot;，分别对应“获取用户公开资料”、“读取用户的私有文档”和“读写用户的私有文档”。
 </aside>
 
 <h2 id="password-方式">Password 方式</h2>
