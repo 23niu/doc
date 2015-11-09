@@ -167,63 +167,6 @@ grant_type=authorization&amp;code=yourcode
 scope 的有效值分别为 `public`, `read` 和 `write`，分别对应“获取用户公开资料”、“读取用户的私有文档”和“读写用户的私有文档”。
 </aside>
 
-<blockquote>
-<h2 id="provider-exchange-方式">Provider Exchange 方式</h2>
-<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=</span>
-<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded</span>
-<span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
-<span class="na">Content-Length</span><span class="p">:</span> <span class="s">64</span>
-
-grant_type=provider_exchange&amp;provider_user=user_id_here
-</code></pre>
-<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">oauth</span><span class="p">.</span><span class="nx">token</span><span class="p">(</span><span class="s1">'provider_exchange'</span><span class="p">,</span> <span class="p">{</span>
-  <span class="na">provider_user</span><span class="p">:</span> <span class="s1">'user_id_here'</span>
-<span class="p">});</span>
-</code></pre>
-
-<p>对于限定的第三方登录提供商，石墨提供 Provider Exchange 方式来允许第三方直接获取其平台用户在石墨的 Access Token。
-例如某个用户 A 是通过 OAuth 服务提供商 B 登录的石墨，此时 B 想请求 A 在石墨的 Access Token，则只需要提供 A 在 B 的用户 ID 即可。</p>
-
-<h3 id="http-请求">HTTP 请求</h3>
-
-<p><code class="prettyprint">POST https://api.shimo.im/oauth/token</code></p>
-
-<h3 id="请求-body">请求 Body</h3>
-
-<table><thead>
-<tr>
-<th>参数</th>
-<th>必选</th>
-<th>默认值</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>grant_type</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>指定为 <code class="prettyprint">provider_exchange</code></td>
-</tr>
-<tr>
-<td>scope</td>
-<td>否</td>
-<td>无</td>
-<td>string</td>
-<td>需要的权限列表，以空格分隔</td>
-</tr>
-<tr>
-<td>provider_user</td>
-<td>是</td>
-<td>无</td>
-<td>string</td>
-<td>目标用户在 provider 的用户 ID</td>
-</tr>
-</tbody></table>
-</blockquote>
-
 <h2 id="password-方式">Password 方式</h2>
 <pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=</span>
