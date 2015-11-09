@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>API 接口草稿</title>
+    <title>石墨开放 API</title>
 
     <link href="stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
@@ -13,7 +13,7 @@
 
       <script>
         $(function() {
-          setupLanguages(["http","node"]);
+          setupLanguages(["http","javascript"]);
         });
       </script>
   </head>
@@ -27,8 +27,8 @@
     </a>
     <div class="tocify-wrapper">
         <div class="lang-selector">
-              <a href="#" data-language-name="http">http</a>
-              <a href="#" data-language-name="node">Node.js</a>
+              <a href="#" data-language-name="http">HTTP</a>
+              <a href="#" data-language-name="javascript">Node.js</a>
         </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -44,10 +44,7 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id="介绍">介绍</h1>
-
-<p>此文档定义的 API 正在开发中，具体接口字段可能会有细节调整。</p>
-
+        
           <h1 id="oauth-授权">OAuth 授权</h1>
 
 <p>石墨鉴权接口遵循 <a href="https://tools.ietf.org/html/rfc6749">OAuth 2.0 协议</a>。OAuth 是一个能使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的标准协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
@@ -63,15 +60,15 @@
 
 grant_type=authorization&amp;code=yourcode
 </code></pre>
-<pre class="highlight plaintext"><code>// First, redirect users to the authorization page:
-res.redirect(shimo.oauth.authorization({
-  redirect_uri: 'https://yourapp.tld/oauth/callback'
-}));
+<pre class="highlight javascript"><code><span class="c1">// First, redirect users to the authorization page:</span>
+<span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="nx">shimo</span><span class="p">.</span><span class="nx">oauth</span><span class="p">.</span><span class="nx">authorization</span><span class="p">({</span>
+  <span class="na">redirect_uri</span><span class="p">:</span> <span class="s1">'https://yourapp.tld/oauth/callback'</span>
+<span class="p">}));</span>
 
-// Second, exchange token with the returned code in the callback page:
-shimo.oauth.token('authorization', {
-  code: req.query.code
-});
+<span class="c1">// Second, exchange token with the returned code in the callback page:</span>
+<span class="nx">shimo</span><span class="p">.</span><span class="nx">oauth</span><span class="p">.</span><span class="nx">token</span><span class="p">(</span><span class="s1">'authorization'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">code</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">code</span>
+<span class="p">});</span>
 </code></pre>
 
 <p>Authorization Code 方式是最通用的授权方式，该方式尤其适用于网站使用。</p>
@@ -180,9 +177,9 @@ scope 的有效值分别为 `public`, `read` 和 `write`，分别对应“获取
 
 grant_type=provider_exchange&amp;provider_user=user_id_here
 </code></pre>
-<pre class="highlight plaintext"><code>shimo.oauth.token('provider_exchange', {
-  provider_user: 'user_id_here'
-});
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">oauth</span><span class="p">.</span><span class="nx">token</span><span class="p">(</span><span class="s1">'provider_exchange'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">provider_user</span><span class="p">:</span> <span class="s1">'user_id_here'</span>
+<span class="p">});</span>
 </code></pre>
 
 <p>对于限定的第三方登录提供商，石墨提供 Provider Exchange 方式来允许第三方直接获取其平台用户在石墨的 Access Token。
@@ -236,10 +233,10 @@ grant_type=provider_exchange&amp;provider_user=user_id_here
 
 grant_type=password&amp;username=user@shimo.im@password=strongtoken
 </code></pre>
-<pre class="highlight plaintext"><code>shimo.oauth.token('password', {
-  username: 'user',
-  password: 'strongtoken'
-});
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">oauth</span><span class="p">.</span><span class="nx">token</span><span class="p">(</span><span class="s1">'password'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">username</span><span class="p">:</span> <span class="s1">'user'</span><span class="p">,</span>
+  <span class="na">password</span><span class="p">:</span> <span class="s1">'strongtoken'</span>
+<span class="p">});</span>
 </code></pre>
 
 <p>Password 方式允许第三方应用通过用户的邮箱和密码获取 Access Token。目前此方式只开放给指定的第三方应用。</p>
@@ -298,10 +295,10 @@ grant_type=password&amp;username=user@shimo.im@password=strongtoken
 
 grant_type=refresh_token&amp;refresh_token=tokenhere
 </code></pre>
-<pre class="highlight plaintext"><code>shimo.oauth.token('refresh_token', {
-  refresh_token: 'tokenhere',
-  password: 'strongtoken'
-});
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">oauth</span><span class="p">.</span><span class="nx">token</span><span class="p">(</span><span class="s1">'refresh_token'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">refresh_token</span><span class="p">:</span> <span class="s1">'tokenhere'</span><span class="p">,</span>
+  <span class="na">password</span><span class="p">:</span> <span class="s1">'strongtoken'</span>
+<span class="p">});</span>
 </code></pre>
 
 <p>Access Token 的有效期为一个小时，过期后需要使用 Refresh Token 刷新。Refresh Token 除非用户主动撤销，否则永久有效。</p>
@@ -356,7 +353,7 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/users/me</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
-<pre class="highlight plaintext"><code>shimo.get('users/me');
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'users/me'</span><span class="p">);</span>
 </code></pre>
 
 <blockquote>
@@ -382,7 +379,7 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files?folder=jUiAcImUVWuhIbcW&amp;subFolders%20=true</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
-<pre class="highlight plaintext"><code>shimo.get('files', { qs: { folder: 'jUiAcImUVWuhIbcW' } });
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'files'</span><span class="p">,</span> <span class="p">{</span> <span class="na">qs</span><span class="p">:</span> <span class="p">{</span> <span class="na">folder</span><span class="p">:</span> <span class="s1">'jUiAcImUVWuhIbcW'</span> <span class="p">}</span> <span class="p">});</span>
 </code></pre>
 
 <blockquote>
@@ -431,10 +428,10 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
 
 <span class="p">{</span><span class="nt">"folder"</span><span class="p">:</span><span class="kc">false</span><span class="p">}</span><span class="w">
 </span></code></pre>
-<pre class="highlight plaintext"><code>shimo.post('files', {
-  qs: { folder: 32 },
-  body: { folder: false }
-});
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'files'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">qs</span><span class="p">:</span> <span class="p">{</span> <span class="na">folder</span><span class="p">:</span> <span class="mi">32</span> <span class="p">},</span>
+  <span class="na">body</span><span class="p">:</span> <span class="p">{</span> <span class="na">folder</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}</span>
+<span class="p">});</span>
 </code></pre>
 
 <blockquote>
@@ -506,7 +503,7 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files/17</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
-<pre class="highlight plaintext"><code>shimo.get('files/N25Dhp2vTT4uHoKt');
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'files/N25Dhp2vTT4uHoKt'</span><span class="p">);</span>
 </code></pre>
 
 <blockquote>
@@ -533,7 +530,7 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
 
 <span class="p">{</span><span class="nt">"creator"</span><span class="p">:</span><span class="s2">"79"</span><span class="p">}</span><span class="w">
 </span></code></pre>
-<pre class="highlight plaintext"><code>shimo.patch('files/17', { body: { creator: 79 } });
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">patch</span><span class="p">(</span><span class="s1">'files/17'</span><span class="p">,</span> <span class="p">{</span> <span class="na">body</span><span class="p">:</span> <span class="p">{</span> <span class="na">creator</span><span class="p">:</span> <span class="mi">79</span> <span class="p">}</span> <span class="p">});</span>
 </code></pre>
 
 <p>修改文档，目前可以修改文档的管理员（默认情况下管理员即为文档的创建者）。</p>
@@ -617,8 +614,8 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
       </div>
       <div class="dark-box">
           <div class="lang-selector">
-                <a href="#" data-language-name="http">http</a>
-                <a href="#" data-language-name="node">Node.js</a>
+                <a href="#" data-language-name="http">HTTP</a>
+                <a href="#" data-language-name="javascript">Node.js</a>
           </div>
       </div>
     </div>
