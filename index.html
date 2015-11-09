@@ -52,7 +52,7 @@
 
 <p>石墨鉴权接口遵循 <a href="https://tools.ietf.org/html/rfc6749">OAuth 2.0 协议</a>。OAuth 是一个能使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的标准协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
 
-<p>石墨支持 Authorization Code, Password, Provider Exchange 和 Refresh Token 四种 OAuth 授权方式，其中每种授权方式都是通过调用 <code class="prettyprint">/oauth/token</code> 接口来最终获取 Access Token，该接口需要传送 <code class="prettyprint">&quot;Authorization&quot;</code> header，内容遵循 HTTP Basic 标准，格式为 <code class="prettyprint">&quot;client_id:client_secret&quot;</code>。另外为了严格遵照 OAuth 2.0 规范，OAuth 相关的 API 均支持使用 <code class="prettyprint">application/x-www-form-urlencoded</code> 格式传送数据。</p>
+<p>石墨支持 Authorization Code, Password 和 Refresh Token 三种 OAuth 授权方式，其中每种授权方式都是通过调用 <code class="prettyprint">/oauth/token</code> 接口来最终获取 Access Token，该接口需要传送 <code class="prettyprint">&quot;Authorization&quot;</code> header，内容遵循 HTTP Basic 标准，格式为 <code class="prettyprint">&quot;client_id:client_secret&quot;</code>。另外为了严格遵照 OAuth 2.0 规范，OAuth 相关的 API 均支持使用 <code class="prettyprint">application/x-www-form-urlencoded</code> 格式传送数据。</p>
 
 <h2 id="authorization-code-方式">Authorization Code 方式</h2>
 <pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -170,6 +170,7 @@ shimo.oauth.token('authorization', {
 scope 的有效值分别为 `public`, `read` 和 `write`，分别对应“获取用户公开资料”、“读取用户的私有文档”和“读写用户的私有文档”。
 </aside>
 
+<blockquote>
 <h2 id="provider-exchange-方式">Provider Exchange 方式</h2>
 <pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=</span>
@@ -224,6 +225,7 @@ grant_type=provider_exchange&amp;provider_user=user_id_here
 <td>目标用户在 provider 的用户 ID</td>
 </tr>
 </tbody></table>
+</blockquote>
 
 <h2 id="password-方式">Password 方式</h2>
 <pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
