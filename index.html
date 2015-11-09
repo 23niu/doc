@@ -13,7 +13,7 @@
 
       <script>
         $(function() {
-          setupLanguages(["http","shell"]);
+          setupLanguages(["http","node"]);
         });
       </script>
   </head>
@@ -28,7 +28,7 @@
     <div class="tocify-wrapper">
         <div class="lang-selector">
               <a href="#" data-language-name="http">http</a>
-              <a href="#" data-language-name="shell">shell</a>
+              <a href="#" data-language-name="node">Node.js</a>
         </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -50,11 +50,29 @@
 
           <h1 id="oauth-授权">OAuth 授权</h1>
 
-<p>石墨鉴权接口遵循 OAuth 2.0 协议。OAuth 是一个能使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
+<p>石墨鉴权接口遵循 <a href="https://tools.ietf.org/html/rfc6749">OAuth 2.0 协议</a>。OAuth 是一个能使得第三方应用在无需知道用户的密码的前提下读写用户私有资源的标准协议，第三方应用通过 OAuth 协议向用户请求授权后，可以获得一个 Access Token，此后即可使用该 Token 来代替用户密码来通过石墨开放 API 请求用户的私有资源。</p>
 
-<p>石墨支持 Authorization Code, Password, Provider Exchange 和 Refresh Token 四种 OAuth 授权方式。</p>
+<p>石墨支持 Authorization Code, Password, Provider Exchange 和 Refresh Token 四种 OAuth 授权方式，其中每种授权方式都是通过调用 <code class="prettyprint">/oauth/token</code> 接口来最终获取 Access Token，该接口需要传送 <code class="prettyprint">&quot;Authorization&quot;</code> header，内容遵循 HTTP Basic 标准，格式为 <code class="prettyprint">&quot;client_id:client_secret&quot;</code>。另外为了严格遵照 OAuth 2.0 规范，OAuth 相关的 API 均支持使用 <code class="prettyprint">application/x-www-form-urlencoded</code> 格式传送数据。</p>
 
 <h2 id="authorization-code-方式">Authorization Code 方式</h2>
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/oauth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">64</span>
+
+grant_type=authorization&amp;code=yourcode
+</code></pre>
+<pre class="highlight plaintext"><code>// First, redirect users to the authorization page:
+res.redirect(shimo.oauth.authorization({
+  redirect_uri: 'https://yourapp.tld/oauth/callback'
+}));
+
+// Second, exchange token with the returned code in the callback page:
+shimo.oauth.token('authorization', {
+  code: req.query.code
+});
+</code></pre>
 
 <p>Authorization Code 方式是最通用的授权方式，该方式尤其适用于网站使用。</p>
 
@@ -161,11 +179,9 @@ scope 的有效值分别为 `public`, `read` 和 `write`，分别对应“获取
 
 grant_type=provider_exchange&amp;provider_user=user_id_here
 </code></pre>
-<pre class="highlight shell"><code><span class="c"># Authorization 的值遵循 HTTP Basic Auth，由 client_id:client_secret 构成</span>
-curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oauth/token"</span> <span class="se">\</span>
-    -H <span class="s2">"Authorization: Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">"grant_type=provider_exchange"</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">"provider_user=user_id_here"</span>
+<pre class="highlight plaintext"><code>shimo.oauth.token('provider_exchange', {
+  provider_user: 'user_id_here'
+});
 </code></pre>
 
 <p>对于限定的第三方登录提供商，石墨提供 Provider Exchange 方式来允许第三方直接获取其平台用户在石墨的 Access Token。
@@ -218,12 +234,10 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 
 grant_type=password&amp;username=user@shimo.im@password=strongtoken
 </code></pre>
-<pre class="highlight shell"><code><span class="c"># Authorization 的值遵循 HTTP Basic Auth，由 client_id:client_secret 构成</span>
-curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oauth/token"</span> <span class="se">\</span>
-    -H <span class="s2">"Authorization: Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">"grant_type=password"</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">"username=user@shimo.im"</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">"password=strongtoken"</span>
+<pre class="highlight plaintext"><code>shimo.oauth.token('password', {
+  username: 'user',
+  password: 'strongtoken'
+});
 </code></pre>
 
 <p>Password 方式允许第三方应用通过用户的邮箱和密码获取 Access Token。目前此方式只开放给指定的第三方应用。</p>
@@ -282,11 +296,10 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 
 grant_type=refresh_token&amp;refresh_token=tokenhere
 </code></pre>
-<pre class="highlight shell"><code><span class="c"># Authorization 的值遵循 HTTP Basic Auth，由 client_id:client_secret 构成</span>
-curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oauth/token"</span> <span class="se">\</span>
-    -H <span class="s2">"Authorization: Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">"grant_type=refresh_token"</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">"refresh_token=tokenhere"</span>
+<pre class="highlight plaintext"><code>shimo.oauth.token('refresh_token', {
+  refresh_token: 'tokenhere',
+  password: 'strongtoken'
+});
 </code></pre>
 
 <p>Access Token 的有效期为一个小时，过期后需要使用 Refresh Token 刷新。Refresh Token 除非用户主动撤销，否则永久有效。</p>
@@ -341,7 +354,7 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/users/me</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X <span class="s2">"GET"</span> <span class="s2">"https://api.shimo.im/users/me"</span>
+<pre class="highlight plaintext"><code>shimo.get('users/me');
 </code></pre>
 
 <blockquote>
@@ -367,8 +380,8 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files?folder=jUiAcImUVWuhIbcW&amp;subFolders%20=true</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X <span class="s2">"GET"</span> <span class="s2">"https://api.shimo.im/files?folder=jUiAcImUVWuhIbcW
-</span></code></pre>
+<pre class="highlight plaintext"><code>shimo.get('files', { qs: { folder: 'jUiAcImUVWuhIbcW' } });
+</code></pre>
 
 <blockquote>
 <p>请求成功后返回样例：</p>
@@ -416,9 +429,10 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 
 <span class="p">{</span><span class="nt">"folder"</span><span class="p">:</span><span class="kc">false</span><span class="p">}</span><span class="w">
 </span></code></pre>
-<pre class="highlight shell"><code>curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/files?folder=32"</span> <span class="se">\</span>
-    -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-    -d <span class="s2">"{</span><span class="se">\"</span><span class="s2">folder</span><span class="se">\"</span><span class="s2">:false}"</span>
+<pre class="highlight plaintext"><code>shimo.post('files', {
+  qs: { folder: 32 },
+  body: { folder: false }
+});
 </code></pre>
 
 <blockquote>
@@ -490,7 +504,7 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files/17</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X <span class="s2">"GET"</span> <span class="s2">"https://api.shimo.im/files/N25Dhp2vTT4uHoKt"</span>
+<pre class="highlight plaintext"><code>shimo.get('files/N25Dhp2vTT4uHoKt');
 </code></pre>
 
 <blockquote>
@@ -517,9 +531,7 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
 
 <span class="p">{</span><span class="nt">"creator"</span><span class="p">:</span><span class="s2">"79"</span><span class="p">}</span><span class="w">
 </span></code></pre>
-<pre class="highlight shell"><code>curl -X <span class="s2">"PATCH"</span> <span class="s2">"https://api.shimo.im/files/17"</span> <span class="se">\</span>
-    -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-    -d <span class="s2">"{</span><span class="se">\"</span><span class="s2">creator</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">79</span><span class="se">\"</span><span class="s2">}"</span>
+<pre class="highlight plaintext"><code>shimo.patch('files/17', { body: { creator: 79 } });
 </code></pre>
 
 <p>修改文档，目前可以修改文档的管理员（默认情况下管理员即为文档的创建者）。</p>
@@ -604,7 +616,7 @@ curl -X <span class="s2">"POST"</span> <span class="s2">"https://api.shimo.im/oa
       <div class="dark-box">
           <div class="lang-selector">
                 <a href="#" data-language-name="http">http</a>
-                <a href="#" data-language-name="shell">shell</a>
+                <a href="#" data-language-name="node">Node.js</a>
           </div>
       </div>
     </div>
