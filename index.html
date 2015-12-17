@@ -519,10 +519,10 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
 </tbody></table>
 
 <h2 id="获取文档内容">获取文档内容</h2>
-<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files/17</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/files/neFFrL5xmakcgPGS?html=true</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.shimo.im</span>
 </code></pre>
-<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'files/N25Dhp2vTT4uHoKt'</span><span class="p">);</span>
+<pre class="highlight javascript"><code><span class="nx">shimo</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'files/neFFrL5xmakcgPGS?html=true'</span><span class="p">);</span>
 </code></pre>
 
 <blockquote>
@@ -547,6 +547,24 @@ grant_type=refresh_token&amp;refresh_token=tokenhere
 <h3 id="http-请求">HTTP 请求</h3>
 
 <p><code class="prettyprint">GET https://api.shimo.im/files/:fileId</code></p>
+
+<table><thead>
+<tr>
+<th>参数</th>
+<th>必选</th>
+<th>默认值</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>html</td>
+<td>否</td>
+<td>false</td>
+<td>boolean</td>
+<td>如提供，则会返回 html 属性</td>
+</tr>
+</tbody></table>
 
           <h1 id="错误">错误</h1>
 
